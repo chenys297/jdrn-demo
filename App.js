@@ -35,7 +35,7 @@ class App extends Component {
       cliperConatinerLeft: new Animated.Value(getRpx(cliperDesc[2])),
       giftTop: new Animated.Value(getRpx(giftDesc[2])),
       moreWidth: new Animated.Value(getRpx(0)),
-      moreLeft: new Animated.Value(getRpx(-Number(more1Desc[0]))),
+      moreLeft: new Animated.Value(getRpx(-Number(more1Desc[2]))),
       giftCLeft: new Animated.Value(getRpx(Number(cliperDesc[3]))),
       showFrontGift: false,
       showMore: false,
@@ -121,20 +121,20 @@ class App extends Component {
         });
       }),
       // 礼物描述右下划出
-      Animated.parallel([
-        Animated.timing(this.state.moreLeft, {
-          toValue: getRpx(0),
-          duration: Number(more1Desc[3]),
-          easing: Easing.linear,
-          delay: Number(cliperDesc[4]) + Number(giftDesc[4]),
-        }).start(),
-      ]),
+      // Animated.parallel([
+      Animated.timing(this.state.moreLeft, {
+        toValue: getRpx(0),
+        duration: Number(more1Desc[3]),
+        easing: Easing.linear,
+        delay: Number(cliperDesc[4]) + Number(giftDesc[4]),
+      }).start(),
       Animated.timing(this.state.giftCLeft, {
         toValue: getRpx(Number(cliperDesc[3]) + Number(more1Desc[2])),
         duration: Number(more1Desc[3]),
         easing: Easing.linear,
         delay: Number(cliperDesc[4]) + Number(giftDesc[4]),
       }).start(),
+      // ]),
     ]);
   }
 
@@ -329,6 +329,8 @@ class App extends Component {
             borderBottomLeftRadius: getRpx(borderRadio),
             overflow: 'hidden',
             margin: 0,
+            // visibility: this.state.showMore ? 'visible' : 'hidden',
+            opacity: this.state.showMore ? 1 : 0,
           }}>
           <Animated.View
             style={{
@@ -361,7 +363,8 @@ class App extends Component {
         {this._renderCliperAndGift()}
         {this._renderArrowLeft()}
         {this._renderSku()}
-        {this.state.showMore && this._renderMore()}
+        {/* {this.state.showMore && this._renderMore()} */}
+        {this._renderMore()}
         {this.state.showFrontGift && this._renderFrontGift()}
         {this._renderArrowRight()}
       </>
@@ -421,7 +424,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'coral',
   },
   moreInfo: {
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
   },
   moreAndGift: {
     display: 'flex',
