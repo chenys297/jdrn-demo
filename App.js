@@ -35,9 +35,8 @@ class App extends Component {
       cliperConatinerLeft: new Animated.Value(getRpx(cliperDesc[2])),
       giftTop: new Animated.Value(getRpx(giftDesc[2])),
       moreWidth: new Animated.Value(getRpx(0)),
-      moreLeft: new Animated.Value(
-        getRpx(-Number(more1Desc[0]) + Number(giftDesc[1])),
-      ),
+      moreLeft: new Animated.Value(getRpx(-Number(more1Desc[0]))),
+      giftCLeft: new Animated.Value(getRpx(Number(cliperDesc[3]))),
       showFrontGift: false,
       showMore: false,
     };
@@ -91,7 +90,7 @@ class App extends Component {
         imageWidth: '265',
         imageHeight: '50',
       },
-      more1Desc: ['260', '510', '240', '3000'],
+      more1Desc: ['260', '510', '180', '3000'],
     };
   };
 
@@ -122,8 +121,16 @@ class App extends Component {
         });
       }),
       // 礼物描述右下划出
-      Animated.timing(this.state.moreLeft, {
-        toValue: getRpx(0),
+      Animated.parallel([
+        Animated.timing(this.state.moreLeft, {
+          toValue: getRpx(0),
+          duration: Number(more1Desc[3]),
+          easing: Easing.linear,
+          delay: Number(cliperDesc[4]) + Number(giftDesc[4]),
+        }).start(),
+      ]),
+      Animated.timing(this.state.giftCLeft, {
+        toValue: getRpx(Number(cliperDesc[3]) + Number(more1Desc[2])),
         duration: Number(more1Desc[3]),
         easing: Easing.linear,
         delay: Number(cliperDesc[4]) + Number(giftDesc[4]),
@@ -155,8 +162,9 @@ class App extends Component {
               giftImage.imageWidth,
               giftImage.imageHeight,
             ),
-            left: this.state.cliperConatinerLeft,
+            left: this.state.giftCLeft,
             top: this.state.giftTop,
+            margin: 0,
           }}>
           <Image
             style={{height: '100%', width: '100%'}}
@@ -299,7 +307,7 @@ class App extends Component {
   };
 
   _renderMore = () => {
-    const {more1Desc, more1Image, giftImage, giftDesc} = this._getFloorData();
+    const {more1Desc, more1Image} = this._getFloorData();
     let scaleRatio = Number(more1Desc[2]) / more1Image.imageWidth;
     const borderRadio = (scaleRatio * Number(more1Image.imageHeight)) / 2;
 
@@ -309,57 +317,38 @@ class App extends Component {
           style={{
             ...styles.moreInfo,
             position: 'absolute',
-            width: getRpx(Number(more1Desc[2]) + Number(giftDesc[1])),
+            width: getRpx(Number(more1Desc[2])),
             height: this._getImgHeight(
-              Number(more1Desc[2]) + Number(giftDesc[1]),
-              Number(more1Image.imageWidth) + Number(giftImage.imageWidth),
-              Number(more1Image.imageHeight) + Number(giftImage.imageHeight),
+              Number(more1Desc[2]),
+              Number(more1Image.imageWidth),
+              Number(more1Image.imageHeight),
             ),
             left: getRpx(more1Desc[0]),
             top: getRpx(more1Desc[1]),
             borderTopLeftRadius: getRpx(borderRadio),
             borderBottomLeftRadius: getRpx(borderRadio),
             overflow: 'hidden',
+            margin: 0,
           }}>
           <Animated.View
             style={{
-              width: getRpx(Number(more1Desc[2]) + Number(giftDesc[1])),
+              width: getRpx(Number(more1Desc[2])),
               height: this._getImgHeight(
-                Number(more1Desc[2]) + Number(giftDesc[1]),
-                Number(more1Image.imageWidth) + Number(giftImage.imageWidth),
-                Number(more1Image.imageHeight) + Number(giftImage.imageHeight),
+                Number(more1Desc[2]),
+                Number(more1Image.imageWidth),
+                Number(more1Image.imageHeight),
               ),
               marginLeft: this.state.moreLeft,
+              margin: 0,
             }}>
-            <View
+            <Image
               style={{
-                ...styles.moreAndGift,
-                width: getRpx(more1Desc[2]),
-                height: this._getImgHeight(
-                  more1Desc[2],
-                  more1Image.imageWidth,
-                  more1Image.imageHeight,
-                ),
-              }}>
-              <Image
-                style={{
-                  height: '100%',
-                  width: '100%',
-                }}
-                source={more1Image.imageUrl}
-              />
-              <Image
-                style={{
-                  width: getRpx(giftDesc[1]),
-                  height: this._getImgHeight(
-                    giftDesc[1],
-                    giftImage.imageWidth,
-                    giftImage.imageHeight,
-                  ),
-                }}
-                source={giftImage.imageUrl}
-              />
-            </View>
+                height: '100%',
+                width: '100%',
+                margin: 0,
+              }}
+              source={more1Image.imageUrl}
+            />
           </Animated.View>
         </View>
       </>
@@ -372,10 +361,8 @@ class App extends Component {
         {this._renderCliperAndGift()}
         {this._renderArrowLeft()}
         {this._renderSku()}
-        {this.state.showFrontGift &&
-          !this.state.showMore &&
-          this._renderFrontGift()}
         {this.state.showMore && this._renderMore()}
+        {this.state.showFrontGift && this._renderFrontGift()}
         {this._renderArrowRight()}
       </>
     );
@@ -434,7 +421,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'coral',
   },
   moreInfo: {
-    // backgroundColor: 'blue',
+    backgroundColor: 'blue',
   },
   moreAndGift: {
     display: 'flex',
