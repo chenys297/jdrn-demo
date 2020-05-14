@@ -43,9 +43,22 @@ class App extends Component {
   }
 
   onPress = type => {
-    this.setState({
-      clickType: type,
-    });
+    const {cliperDesc, giftDesc, more1Desc} = this._getFloorData();
+    this.setState(
+      {
+        cliperConatinerLeft: new Animated.Value(getRpx(cliperDesc[2])),
+        giftTop: new Animated.Value(getRpx(giftDesc[2])),
+        moreWidth: new Animated.Value(getRpx(0)),
+        moreLeft: new Animated.Value(getRpx(-Number(more1Desc[2]))),
+        giftCLeft: new Animated.Value(getRpx(Number(cliperDesc[3]))),
+        showFrontGift: false,
+        showMore: false,
+        clickType: type,
+      },
+      () => {
+        this._startAnimation();
+      },
+    );
   };
 
   _getFloorData = () => {
@@ -94,7 +107,7 @@ class App extends Component {
     };
   };
 
-  componentDidMount() {
+  _startAnimation = () => {
     const {cliperDesc, giftDesc, more1Desc} = this._getFloorData();
     Animated.sequence([
       //夹子和礼物一起向右滑动
@@ -136,6 +149,10 @@ class App extends Component {
       }).start(),
       // ]),
     ]);
+  };
+
+  componentDidMount() {
+    this._startAnimation();
   }
 
   /**
